@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const path = require('path');
 const { Server } = require('socket.io');
 const ACTIONS = require('./Actions');
 const server = http.createServer(app);
@@ -13,7 +14,7 @@ function getAllConnectedClients(roomId){
     (socketId) => {
         return {
             socketId,
-            username: userSocketMap[socketId],
+            username: userSocketMap[socketId]
         };
     }
 );
@@ -27,7 +28,7 @@ io.on('connection', (socket) => {
         userSocketMap[socket.id] = username;
         socket.join(roomId);
         const clients = getAllConnectedClients(roomId);
-        clients.forEach(({ socketId}) => {
+        clients.forEach(({socketId}) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
                 username,
@@ -38,8 +39,9 @@ io.on('connection', (socket) => {
     });
     
 
-    socket.on(ACTIONS.CODE_CHANGE, ({roomid, code}) => {
+    socket.on(ACTIONS.CODE_CHANGE, ({roomId, code}) => {
         socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+        // console.log(code)
     });
 
     socket.on(ACTIONS.SYNC_CODE, ({socketId, code}) => {
@@ -59,7 +61,9 @@ io.on('connection', (socket) => {
     });
 });
 
-
+app.get('/', (req, res)=>{
+res.send('hello')
+})
 
 const PORT = process.env.port || 5000;
-server.listen(PORT, () => console.log('Listening on port ${PORT}'));
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));

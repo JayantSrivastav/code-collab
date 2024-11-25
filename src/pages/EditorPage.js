@@ -11,7 +11,7 @@ import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
   const socketRef = useRef(null);
   const codeRef = useRef(null);
   const location = useLocation();
-  const { roomId }= useParams;
+  const { roomId }= useParams();
   const reactNavigator = useNavigate();
   const [clients, setClients]= useState([]);
 
@@ -29,7 +29,7 @@ import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
 
       socketRef.current.emit(ACTIONS.JOIN, { 
         roomId,
-        username : location.state?.username,
+        username : location.state?.username
     });
 
     // Listening for joined event
@@ -39,6 +39,7 @@ import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
             toast.success(`${username} joined the Room`);
             console.log(`${username} joined`);
          }
+        //  console.log(clients);
           setClients(clients);
            socketRef.current.emit(ACTIONS.SYNC_CODE, {
             code: codeRef.current,
@@ -46,23 +47,25 @@ import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
            });
        }
     );
+   
 
     // Listening for disconnected
     socketRef.current.on(ACTIONS.DISCONNECTED, ({socketId, username}) => {
       toast.success(`${username} left the ROOM`);
       setClients((prev) => {
-        return prev.filter(client => client.socketId !== socketId)
+        return prev.filter((client) => client.socketId !== socketId);
       })
     });
 
      };
     init();
     return () => {
+      socketRef.current.disconnect();
       socketRef.current.off(ACTIONS.JOINED);
       socketRef.current.off(ACTIONS.DISCONNECTED);
-      socketRef.current.disconnect();
+      
     }
-  }, []);
+  }, [location.state, roomId, reactNavigator]);
 
   async function copyRoomId() {
     try {

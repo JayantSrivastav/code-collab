@@ -1,4 +1,4 @@
-const ACTIONS = {
+ const ACTIONS = {
     JOIN: 'join',
     JOINED: 'joined',
     DISCONNECTED: 'disconnected',
@@ -8,4 +8,7 @@ const ACTIONS = {
 
 };
 
+
+
+// export default ACTIONS;
 module.exports = ACTIONS;
