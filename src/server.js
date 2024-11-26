@@ -14,7 +14,7 @@ function getAllConnectedClients(roomId){
     (socketId) => {
         return {
             socketId,
-            username: userSocketMap[socketId]
+            username: userSocketMap[socketId],
         };
     }
 );
