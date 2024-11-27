@@ -5,12 +5,18 @@ const path = require('path');
 const { Server } = require('socket.io');
 const ACTIONS = require('./src/Actions');
 const server = http.createServer(app);
+require('dotenv').config()
 const io = new Server(server);
+const cors = require("cors");
 
+app.use(cors({
+  origin: "https://code-collab-jtrj.onrender.com"
+}));
 app.use(express.static('build'));
 app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
 
 const userSocketMap = {};
 function getAllConnectedClients(roomId){
@@ -70,5 +76,5 @@ app.get('/', (req, res)=>{
 res.send('hello')
 })
 
-const PORT = process.env.port || 5000;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
